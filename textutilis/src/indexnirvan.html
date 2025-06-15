@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Listener Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+
+    #myButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Click the Button</h2>
+  <button id="myButton">Click Me!</button>
+
+  <p id="output"></p>
+
+  <script>
+    // Get the button element
+    const button = document.getElementById("myButton");
+
+    // Attach event listener
+    button.addEventListener("click", function() {
+      document.getElementById("output").textContent = "Button clicked! 🎉";
+    });
+  </script>
+
+</body>
+</html>
