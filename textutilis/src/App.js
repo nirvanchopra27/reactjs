@@ -5,14 +5,15 @@ import Navbar from './components/Navbar';
 import TextForm from './components/Textform';
 import AudioUploader from './components/AudioUploader';
 import About from './components/About';
+import Alert from './components/Alert'; // Custom Alert component
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // Your custom styles
+import './App.css';
 
 function App() {
   const [mode, setMode] = useState('light');
   const [alert, setAlert] = useState(null);
 
-  const showAlert = (message, type) => {
+  const showAlert = (message, type = 'primary') => {
     setAlert({ msg: message, type });
     setTimeout(() => setAlert(null), 2500);
   };
@@ -29,14 +30,18 @@ function App() {
   return (
     <Router>
       <Navbar title="TextUtils 🔥" mode={mode} toggleMode={toggleMode} />
-      <div className={`text-${mode === 'light' ? 'dark' : 'light'} min-vh-100 fade-in`}>
+
+      <div className={`text-${mode === 'light' ? 'dark' : 'light'} min-vh-100`}>
         <div className="container py-4">
+
+          {/* ✅ Alert shown conditionally */}
           {alert && (
-            <div className={`alert alert-${alert.type} alert-dismissible fade show shadow`} role="alert">
+            <Alert variant={alert.type} className="shadow-sm mb-3" onClose={() => setAlert(null)}>
               {alert.msg}
-            </div>
+            </Alert>
           )}
 
+          {/* ✅ Page Routing */}
           <Routes>
             <Route path="/" element={<TextForm heading="✨ Try TextUtils - Smart Text Toolbox" showAlert={showAlert} mode={mode} />} />
             <Route path="/about" element={<About mode={mode} />} />

@@ -1,30 +1,44 @@
 import React, { useState } from 'react';
 
 export default function Textform(props) {
-  // ✅ useState hook to track user input
   const [text, setText] = useState('');
 
-  // ✅ Handle changes in the textarea
+  // Handle changes in the textarea
   const handleChange = (event) => {
     setText(event.target.value);
   };
 
-  // ✅ Convert text to uppercase
+  // Convert text to uppercase
   const handleUpperCase = () => {
     setText(text.toUpperCase());
+    props.showAlert('Converted to UPPERCASE', 'success');
   };
 
-  // ✅ Convert text to lowercase
+  // Convert text to lowercase
   const handleLowerCase = () => {
     setText(text.toLowerCase());
+    props.showAlert('Converted to lowercase', 'warning');
   };
 
-  // ✅ Count words (excluding extra spaces)
+  // Remove extra spaces
+  const handleRemoveExtraSpaces = () => {
+    const newText = text.replace(/\s+/g, ' ').trim();
+    setText(newText);
+    props.showAlert('Extra spaces removed', 'secondary');
+  };
+
+  // Copy text to clipboard
+  const handleCopyText = () => {
+    navigator.clipboard.writeText(text);
+    props.showAlert('Text copied to clipboard!', 'info');
+  };
+
+  // Word count logic
   const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-3">Enter your text below</h2>
+      <h2 className="mb-3">{props.heading}</h2>
       <div className="mb-3">
         <textarea
           className="form-control"
@@ -32,7 +46,7 @@ export default function Textform(props) {
           rows="8"
           placeholder="Type or paste your text here..."
           value={text}
-          onChange={handleChange} // ✅ bind the textarea to state
+          onChange={handleChange}
         ></textarea>
       </div>
 
@@ -41,6 +55,12 @@ export default function Textform(props) {
       </button>
       <button className="btn btn-warning me-2" onClick={handleLowerCase}>
         Convert to lowercase
+      </button>
+      <button className="btn btn-secondary me-2" onClick={handleRemoveExtraSpaces}>
+        Remove Extra Spaces
+      </button>
+      <button className="btn btn-info text-white me-2" onClick={handleCopyText}>
+        Copy Text
       </button>
 
       <div className="mt-4">
