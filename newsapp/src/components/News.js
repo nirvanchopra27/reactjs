@@ -21,22 +21,28 @@ export class News extends Component {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.category !== this.props.category) {
-      this.setState(
-        { articles: [], page: 1, loading: true },
-        () => this.fetchNews()
-      );
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+ componentDidUpdate(prevProps) {
+  if (
+    prevProps.category !== this.props.category ||
+    prevProps.query !== this.props.query
+  ) {
+    this.setState(
+      { articles: [], page: 1, loading: true },
+      () => this.fetchNews()
+    );
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+}
 
-  fetchNews = async () => {
-    const { page } = this.state;
-    const category = this.props.category || "general";
-    const pageSize = 6;
+ fetchNews = async () => {
+  const { page } = this.state;
+  const category = this.props.category || "general";
+  const pageSize = 6;
+  const query = this.props.query;
 
-    const url = `https://newsapi.org/v2/top-headlines?category=${category}&language=en&pageSize=${pageSize}&page=${page}&apiKey=fb9175f0a1f14309b9a47f6a48aaac78`;
+  let url = query
+    ? `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&pageSize=${pageSize}&page=${page}&apiKey=fb9175f0a1f14309b9a47f6a48aaac78`
+    : `https://newsapi.org/v2/top-headlines?category=${category}&language=en&pageSize=${pageSize}&page=${page}&apiKey=fb9175f0a1f14309b9a47f6a48aaac78`;
 
     this.setState({ loading: true });
     try {
@@ -99,7 +105,8 @@ export class News extends Component {
   link={article.url}
   author={article.author}
   publishedAt={article.publishedAt}
-  
+   source={article.source?.name}
+
 />
 
             </div>
