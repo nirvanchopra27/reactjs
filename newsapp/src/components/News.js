@@ -91,11 +91,13 @@ export class News extends Component {
     const pageSize = 6;
     const maxPage = Math.ceil(totalResults / pageSize);
 
-    return (
-      <div className="container my-4">
-        <h2 className="text-center mb-4 text-capitalize">
-          {this.props.category || 'General'} News
-        </h2>
+   return (
+  <div className="container my-4" style={{ paddingTop: '120px' }}>
+  <h2 className="text-center mb-4 text-capitalize fw-bold">
+    {this.props.query
+      ? `Search Results for "${this.props.query}"`
+      : `${this.props.category || 'General'} News`}
+  </h2>
 
         <div className="row">
           {Array.isArray(articles) && articles.length > 0 ? (

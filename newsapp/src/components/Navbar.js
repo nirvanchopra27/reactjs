@@ -36,7 +36,7 @@ class Navbar extends Component {
 
     return (
       <div>
-        <nav className={`navbar navbar-expand-lg ${navThemeClass} shadow-sm`}>
+        <nav className={`navbar navbar-expand-lg ${navThemeClass} shadow-sm fixed-top`}>
           <div className="container-fluid">
             <a className="navbar-brand fw-bold" href="#">📰 NewsSphere</a>
 
