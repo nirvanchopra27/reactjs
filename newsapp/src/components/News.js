@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import NewsItem from './NewsItem';
 
-const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
+const API_KEY = "fb9175f0a1f14309b9a47f6a48aaac78";
 
 export class News extends Component {
   constructor(props) {
