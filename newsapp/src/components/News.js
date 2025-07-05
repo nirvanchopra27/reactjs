@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import NewsItem from './NewsItem';
 
+const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
+
 export class News extends Component {
   constructor(props) {
     super(props);
@@ -8,7 +10,7 @@ export class News extends Component {
       articles: [],
       loading: true,
       page: 1,
-      totalResults: 0, // ✅ track total news count
+      totalResults: 0,
     };
   }
 
@@ -21,39 +23,39 @@ export class News extends Component {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
- componentDidUpdate(prevProps) {
-  if (
-    prevProps.category !== this.props.category ||
-    prevProps.query !== this.props.query
-  ) {
-    this.setState(
-      { articles: [], page: 1, loading: true },
-      () => this.fetchNews()
-    );
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.category !== this.props.category ||
+      prevProps.query !== this.props.query
+    ) {
+      this.setState(
+        { articles: [], page: 1, loading: true },
+        () => this.fetchNews()
+      );
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
-}
 
- fetchNews = async () => {
-  const { page } = this.state;
-  const category = this.props.category || "general";
-  const pageSize = 6;
-  const query = this.props.query;
+  fetchNews = async () => {
+    const { page } = this.state;
+    const category = this.props.category || "general";
+    const pageSize = 6;
+    const query = this.props.query;
 
-  let url = query
-    ? `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&pageSize=${pageSize}&page=${page}&apiKey=fb9175f0a1f14309b9a47f6a48aaac78`
-    : `https://newsapi.org/v2/top-headlines?category=${category}&language=en&pageSize=${pageSize}&page=${page}&apiKey=fb9175f0a1f14309b9a47f6a48aaac78`;
+    let url = query
+      ? `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&pageSize=${pageSize}&page=${page}&apiKey=${API_KEY}`
+      : `https://newsapi.org/v2/top-headlines?category=${category}&language=en&pageSize=${pageSize}&page=${page}&apiKey=${API_KEY}`;
 
     this.setState({ loading: true });
     try {
       const response = await fetch(url);
       const data = await response.json();
 
-      this.setState(prevState => ({
-        articles: data.articles,
-        totalResults: data.totalResults,
+      this.setState({
+        articles: Array.isArray(data.articles) ? data.articles : [],
+        totalResults: data.totalResults || 0,
         loading: false
-      }));
+      });
     } catch (error) {
       console.error("News fetch error:", error);
       this.setState({ loading: false });
@@ -61,7 +63,7 @@ export class News extends Component {
   };
 
   handleScroll = () => {
-    // 🔒 Disable infinite scroll (optional if using next/prev)
+    // No infinite scroll logic
   };
 
   handleNext = () => {
@@ -96,27 +98,32 @@ export class News extends Component {
         </h2>
 
         <div className="row">
-          {articles.map((article, index) => (
-            <div className="col-md-4" key={index}>
-             <NewsItem
-  title={article.title}
-  description={article.description}
-  imageUrl={article.urlToImage}
-  link={article.url}
-  author={article.author}
-  publishedAt={article.publishedAt}
-   source={article.source?.name}
-
-/>
-
-            </div>
-          ))}
+          {Array.isArray(articles) && articles.length > 0 ? (
+            articles.map((article, index) => (
+              <div className="col-md-4" key={index}>
+                <NewsItem
+                  title={article.title}
+                  description={article.description}
+                  imageUrl={article.urlToImage}
+                  link={article.url}
+                  author={article.author}
+                  publishedAt={article.publishedAt}
+                  source={article.source?.name}
+                />
+              </div>
+            ))
+          ) : (
+            !loading && (
+              <div className="col-12 text-center">
+                <p>No articles found.</p>
+              </div>
+            )
+          )}
         </div>
 
         {loading && <h5 className="text-center mt-3">Loading...</h5>}
 
-        {/* ✅ Prev/Next Buttons */}
-         <div className="d-flex justify-content-between mt-4">
+        <div className="d-flex justify-content-between mt-4">
           <button
             className="btn btn-dark"
             onClick={this.handlePrev}
@@ -133,7 +140,7 @@ export class News extends Component {
             Next ➡️
           </button>
         </div>
-      </div> 
+      </div>
     );
   }
 }
